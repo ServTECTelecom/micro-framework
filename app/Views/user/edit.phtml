@@ -7,7 +7,7 @@
                 </div>
                 <div class="panel-body">
 
-                    <form action="/user/store" method="post" accept-charset="utf-8">
+                    <form action="/user/<?php echo $this->view->user->id; ?>/update" method="post" accept-charset="utf-8">
 
                         <div class="form-group <?php echo (isset($this->errors['name'])) ? 'has-error' : '' ?>">
                             <label for="name" class="control-label">Name</label>
@@ -35,11 +35,11 @@
                             <?php endif; ?>
                         </div>
 
-                        <div class="form-group <?php echo (isset($this->errors['password'])) ? 'has-error' : '' ?>">
-                            <label for="password_check" class="control-label">Confirm password</label>
-                            <input type="password" name="password_check" class="form-control">
-                            <?php if (isset($this->errors['password'])): ?>
-                                <span class="help-block"><?php echo $this->errors['password'] ?></span>
+                        <div class="form-group <?php echo (isset($this->errors['password_confirmation'])) ? 'has-error' : '' ?>">
+                            <label for="password_confirmation" class="control-label">Confirm password</label>
+                            <input type="password" name="password_confirmation" class="form-control">
+                            <?php if (isset($this->errors['password_confirmation'])): ?>
+                                <span class="help-block"><?php echo $this->errors['password_confirmation'] ?></span>
                             <?php endif; ?>
                         </div>
 

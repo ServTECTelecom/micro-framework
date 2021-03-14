@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Core\BaseModelEloquent;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends BaseModelEloquent
 {
-    public $table = "users";
+    use SoftDeletes;
 
-    public $timestamps = false;
+    public $table = "users";
 
     protected $fillable = ['name', 'email', 'password'];
 
@@ -16,8 +17,10 @@ class User extends BaseModelEloquent
     {
         return [
             'name' => 'min:4|max:255',
-            'email' => 'email|unique:User:email',
-            'password' => 'min:6|max:16'
+            'email' => 'email|unique:users',
+            'password' => 'min:6|max:16|required_with:password_confirmation|same:password_confirmation',
+            'password_confirmation' => 'min:6|max:16'
+
         ];
     }
 
@@ -25,8 +28,9 @@ class User extends BaseModelEloquent
     {
         return [
             'name' => 'min:4|max:255',
-            'email' => "email|unique:User:email:$id",
-            'password' => 'min:6|max:16'
+            'email' => "unique:users,email,$id,id",
+            'password' => 'min:6|max:16|required_with:password_confirmation|same:password_confirmation',
+            'password_confirmation' => 'min:6|max:16'
         ];
     }
 

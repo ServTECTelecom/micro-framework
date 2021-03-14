@@ -12,7 +12,7 @@ class Session
 
     public static function get($key)
     {
-        if(isset($_SESSION[$key]))
+        if (isset($_SESSION[$key]))
             return $_SESSION[$key];
 
         return false;
@@ -20,10 +20,14 @@ class Session
 
     public static function destroy($keys)
     {
-        if(is_array($keys))
-            foreach($keys as $key)
+        if (is_array($keys)) {
+            foreach ($keys as $key) {
                 unset($_SESSION[$key]);
-
-        unset($_SESSION[$keys]);
+            }
+        } else {
+            if (!empty($_SESSION) && isset($_SESSION[$keys])) {
+                unset($_SESSION[$keys]);
+            }
+        }
     }
 }

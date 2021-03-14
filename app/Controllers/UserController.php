@@ -23,21 +23,12 @@ class UserController extends BaseController
         $data = [
             'name' => $request->post->name,
             'email' => $request->post->email,
-            'password' => $request->post->password
+            'password' => $request->post->password,
+            'password_confirmation' => $request->post->password_confirmation,
         ];
 
         if(Validator::make($data, User::rulesCreate())){
             return Redirect::route('/user/create');
-        }
-
-        if($request->post->password != $request->post->password_check){
-            return Redirect::route('/user/create', [
-                'errors' => ['password' => 'Os campos de senha não conferem'],
-                'inputs' => [
-                    'name' => $request->post->name,
-                    'email' => $request->post->email,
-                ]
-            ]);
         }
 
         $data['password'] = password_hash($request->post->password, PASSWORD_BCRYPT);
@@ -66,21 +57,12 @@ class UserController extends BaseController
         $data = [
             'name' => $request->post->name,
             'email' => $request->post->email,
-            'password' => $request->post->password
+            'password' => $request->post->password,
+            'password_confirmation' => $request->post->password_confirmation,
         ];
 
         if(Validator::make($data, User::rulesUpdate($id))){
             return Redirect::route("/user/{$id}/edit");
-        }
-
-        if($request->post->password != $request->post->password_check){
-            return Redirect::route("/user/{$id}/edit", [
-                'errors' => ['password' => 'Os campos de senha não conferem'],
-                'inputs' => [
-                    'name' => $request->post->name,
-                    'email' => $request->post->email,
-                ]
-            ]);
         }
 
         $data['password'] = password_hash($request->post->password, PASSWORD_BCRYPT);
@@ -95,6 +77,11 @@ class UserController extends BaseController
                 'errors' => [$e->getMessage()]
             ]);
         }
+    }
+
+    public function delete($id)
+    {
+        $this->view->user = User::find($id)->delete();
     }
 
 }

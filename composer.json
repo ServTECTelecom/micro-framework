@@ -1,10 +1,11 @@
 {
-  "name": "tjg/microframework",
-  "Description": "Micro Framewrok MVC",
+  "name": "luizfernandotech/micro-framework",
+  "Description": "Fork do TJG Micro Framework",
   "license": "MIT",
   "type": "project",
   "authors": [
-    {"name": "Talles Gazel", "email": "tjgazel@gmail.com"}
+    {"name": "Talles Gazel", "email": "tjgazel@gmail.com"},
+    {"name": "Luiz Fernando da Silva (Colaborador)", "email": "luiz.fernando.tech@gmail.com"}
   ],
   "autoload":{
     "psr-4":{
@@ -13,7 +14,10 @@
     }
   },
   "require":{
-    "php": ">=5.6.4",
-    "illuminate/database": "^5.4"
+    "php": ">=7.3",
+    "illuminate/database": "^8.25",
+    "illuminate/validation": "^8.25",
+    "illuminate/translation": "^8.25",
+    "robmorgan/phinx": "^0.12.5"
   }
 }

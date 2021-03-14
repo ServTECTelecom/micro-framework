@@ -3,17 +3,17 @@
 return [
 
     /* Options (mysql, sqlite) */
-    'driver' => 'sqlite',
+    'driver' => 'mysql',
 
     'sqlite' => [
         'database' => 'database.db'
     ],
 
     'mysql' => [
-        'host' => 'localhost',
-        'database' => 'curso_microframework',
+        'host' => '127.0.0.1',
+        'database' => 'microframework',
         'user' => 'root',
-        'pass' => '123',
+        'pass' => 'root',
         'charset' => 'utf8',
         'collation' => 'utf8_unicode_ci'
     ]

@@ -2,131 +2,44 @@
 
 namespace Core;
 
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Traits\CapsuleManagerTrait;
+use Illuminate\Translation\FileLoader;
+use Illuminate\Translation\Translator;
+use Illuminate\Validation\DatabasePresenceVerifier;
+use Illuminate\Validation\Factory;
+
 class Validator
 {
+    private static $factory;
+
+    private static function getFactory(): Factory
+    {
+        if (empty(self::$factory) && !self::$factory instanceof Factory) {
+            $translationDir = __DIR__ . "/resource/lang";
+            $filesystem = new Filesystem();
+            $fileLoader = new FileLoader($filesystem, $translationDir);
+            $fileLoader->addNamespace('lang', $translationDir);
+            $fileLoader->load('pt_BR', 'validation', 'lang');
+            $translator = new Translator($fileLoader, 'pt_BR');
+            $factory = new Factory($translator);
+            $databaseManager = BaseModelEloquent::getConnectionResolver();
+            $presenceVerifier = new DatabasePresenceVerifier($databaseManager);
+            $factory->setPresenceVerifier($presenceVerifier);
+
+            self::$factory = $factory;
+        }
+
+
+        return self::$factory;
+    }
+
     public static function make(array $data, array $rules)
     {
-        $errors = null;
+        $factory = self::getFactory();
+        $validator = $factory->make($data, $rules);
 
-        foreach ($rules as $ruleKey => $ruleValue) {
-
-            foreach ($data as $dataKey => $dataValue) {
-                if ($ruleKey == $dataKey) {
-
-                    $itemsValue = [];
-                    if(strpos($ruleValue, "|")){
-                        $itemsValue = explode("|", $ruleValue);
-
-                        foreach ($itemsValue as $itemValue){
-                            $subItems = [];
-                            if(strpos($itemValue, ":")){
-                                $subItems = explode(":", $itemValue);
-                                switch ($subItems[0]) {
-                                    case 'min':
-                                        if (strlen($dataValue) < $subItems[1])
-                                            $errors["$ruleKey"] = "O campo {$ruleKey} deve ter um mínimo de {$subItems[1]} caracteres.";
-                                        break;
-                                    case 'max' :
-                                        if (strlen($dataValue) > $subItems[1])
-                                            $errors["$ruleKey"] = "O campo {$ruleKey} deve ter um máximo de {$subItems[1]} caracteres.";
-                                        break;
-                                    case 'unique' :
-                                        $objModel = "\\App\\Models\\" . $subItems[1];
-                                        $model = new $objModel;
-                                        $find = $model->where($subItems[2], $dataValue)->first();
-                                        if($find->$subItems[2]){
-                                            if(isset($subItems[3]) && $find->id == $subItems[3]){
-                                                break;
-                                            }else{
-                                                $errors["$ruleKey"] = "{$ruleKey} já registrado no banco de dados.";
-                                                break;
-                                            }
-                                        }
-                                        break;
-                                }
-                            }else{
-                                switch ($itemValue) {
-                                    case 'required':
-                                        if ($dataValue == ' ' || empty($dataValue))
-                                            $errors["$ruleKey"] = "O campo {$ruleKey} deve ser preenchido.";
-                                        break;
-
-                                    case 'email':
-                                        if (!filter_var($dataValue, FILTER_VALIDATE_EMAIL))
-                                            $errors["$ruleKey"] = "O campo {$ruleKey} não é válido.";
-                                        break;
-
-                                    case 'float':
-                                        if (!filter_var($dataValue, FILTER_VALIDATE_FLOAT))
-                                            $errors["$ruleKey"] = "O campo {$ruleKey} deve conter número decimal.";
-                                        break;
-
-                                    case 'int':
-                                        if (!filter_var($dataValue, FILTER_VALIDATE_INT))
-                                            $errors["$ruleKey"] = "O campo {$ruleKey} deve conter número inteiro.";
-                                        break;
-                                    default :
-                                        break;
-                                }
-                            }
-
-                        }
-
-                    }elseif (strpos($ruleValue, ":")) {
-                        $items = explode(":", $ruleValue);
-                        switch ($items[0]) {
-                            case 'min':
-                                if (strlen($dataValue) < $items[1])
-                                    $errors["$ruleKey"] = "O campo {$ruleKey} deve ter um mínimo de {$items[1]} caracteres.";
-                                break;
-                            case 'max' :
-                                if (strlen($dataValue) > $items[1])
-                                    $errors["$ruleKey"] = "O campo {$ruleKey} deve ter um máximo de {$items[1]} caracteres.";
-                                break;
-                            case 'unique' :
-                                $objModel = "\\App\\Models\\" . $subItems[1];
-                                $model = new $objModel;
-                                $find = $model->where($subItems[2], $dataValue)->first();
-                                if($find->$subItems[2]){
-                                    if(isset($subItems[3]) && $find->id == $subItems[3]){
-                                        break;
-                                    }else{
-                                        $errors["$ruleKey"] = "{$ruleKey} já registrado no banco de dados.";
-                                        break;
-                                    }
-                                }
-                                break;
-                        }
-
-                    } else {
-                        switch ($ruleValue) {
-                            case 'required':
-                                if ($dataValue == ' ' || empty($dataValue))
-                                    $errors["$ruleKey"] = "O campo {$ruleKey} deve ser preenchido.";
-                                break;
-
-                            case 'email':
-                                if (!filter_var($dataValue, FILTER_VALIDATE_EMAIL))
-                                    $errors["$ruleKey"] = "O campo {$ruleKey} não é válido.";
-                                break;
-
-                            case 'float':
-                                if (!filter_var($dataValue, FILTER_VALIDATE_FLOAT))
-                                    $errors["$ruleKey"] = "O campo {$ruleKey} deve conter número decimal.";
-                                break;
-
-                            case 'int':
-                                if (!filter_var($dataValue, FILTER_VALIDATE_INT))
-                                    $errors["$ruleKey"] = "O campo {$ruleKey} deve conter número inteiro.";
-                                break;
-                            default :
-                                break;
-                        }
-
-                    }
-                }
-            }
-        }
+        $errors = $validator->errors()->toArray();
 
         if ($errors) {
             Session::set('errors', $errors);
