@@ -2,11 +2,6 @@
 
 namespace Core;
 
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Traits\CapsuleManagerTrait;
-use Illuminate\Translation\FileLoader;
-use Illuminate\Translation\Translator;
-use Illuminate\Validation\DatabasePresenceVerifier;
 use Illuminate\Validation\Factory;
 
 class Validator
@@ -16,20 +11,8 @@ class Validator
     private static function getFactory(): Factory
     {
         if (empty(self::$factory) && !self::$factory instanceof Factory) {
-            $translationDir = __DIR__ . "/resource/lang";
-            $filesystem = new Filesystem();
-            $fileLoader = new FileLoader($filesystem, $translationDir);
-            $fileLoader->addNamespace('lang', $translationDir);
-            $fileLoader->load('pt_BR', 'validation', 'lang');
-            $translator = new Translator($fileLoader, 'pt_BR');
-            $factory = new Factory($translator);
-            $databaseManager = BaseModelEloquent::getConnectionResolver();
-            $presenceVerifier = new DatabasePresenceVerifier($databaseManager);
-            $factory->setPresenceVerifier($presenceVerifier);
-
-            self::$factory = $factory;
+            self::$factory = Container::getValidator();
         }
-
 
         return self::$factory;
     }

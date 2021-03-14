@@ -28,7 +28,7 @@ class User extends BaseModelEloquent
     {
         return [
             'name' => 'min:4|max:255',
-            'email' => "unique:users,email,$id,id",
+            'email' => "email|unique:users,email,$id,id",
             'password' => 'min:6|max:16|required_with:password_confirmation|same:password_confirmation',
             'password_confirmation' => 'min:6|max:16'
         ];

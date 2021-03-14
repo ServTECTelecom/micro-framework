@@ -67,7 +67,7 @@ class Route
                 $controller = $route[1];
                 $action = $route[2];
                 $auth = new Auth;
-                if(isset($route[3]) && $route[3] == 'auth' && !$auth->check()){
+                if(isset($route[3]) && $route[3] == 'auth' && !$auth->isAuthenticated()){
                     $action = 'forbiden';
                 }
                 break;

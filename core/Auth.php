@@ -34,7 +34,7 @@ class Auth
         return self::$email;
     }
 
-    public static function check()
+    public static function isAuthenticated()
     {
         if(self::$id == null || self::$name == null || self::$email == null)
             return false;
