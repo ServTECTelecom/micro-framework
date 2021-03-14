@@ -14,7 +14,7 @@
                             <input type="text" name="name" class="form-control"
                                    value="<?php echo (isset($this->inputs['name'])) ? $this->inputs['name'] : $this->view->user->name; ?>">
                             <?php if (isset($this->errors['name'])): ?>
-                                <span class="help-block"><?php echo $this->errors['name'] ?></span>
+                                <span class="help-block"><?php echo implode("<br>", $this->errors['name']) ?></span>
                             <?php endif; ?>
                         </div>
 
@@ -23,7 +23,7 @@
                             <input type="text" name="email" class="form-control"
                                    value="<?php echo (isset($this->inputs['email'])) ? $this->inputs['email'] : $this->view->user->email ?>">
                             <?php if (isset($this->errors['email'])): ?>
-                                <span class="help-block"><?php echo $this->errors['email'] ?></span>
+                                <span class="help-block"><?php echo implode("<br>", $this->errors['email']) ?></span>
                             <?php endif; ?>
                         </div>
 
@@ -31,7 +31,7 @@
                             <label for="password" class="control-label">Password</label>
                             <input type="password" name="password" class="form-control">
                             <?php if (isset($this->errors['password'])): ?>
-                                <span class="help-block"><?php echo $this->errors['password'] ?></span>
+                                <span class="help-block"><?php echo implode("<br>", $this->errors['password']) ?></span>
                             <?php endif; ?>
                         </div>
 
@@ -39,7 +39,7 @@
                             <label for="password_confirmation" class="control-label">Confirm password</label>
                             <input type="password" name="password_confirmation" class="form-control">
                             <?php if (isset($this->errors['password_confirmation'])): ?>
-                                <span class="help-block"><?php echo $this->errors['password_confirmation'] ?></span>
+                                <span class="help-block"><?php echo implode("<br>", $this->errors['password_confirmation']) ?></span>
                             <?php endif; ?>
                         </div>
 
