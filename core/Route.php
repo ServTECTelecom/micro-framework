@@ -59,7 +59,7 @@ class Route
                     $routeArray[$i] = $urlArray[$i];
                     $param[] = $urlArray[$i];
                 }
-                $route[0] = implode($routeArray, '/');
+                $route[0] = implode('/', $routeArray);
             }
 
             if($url == $route[0]){
