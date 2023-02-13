@@ -28,14 +28,23 @@ class Route
 
     private function getRequest()
     {
-        $obj = new \stdClass;
-
+        $obj = new \stdClass();
+        /*
         foreach ($_GET as $key => $value){
             @$obj->get->$key = $value;
         }
 
         foreach ($_POST as $key => $value){
-            @$obj->post->$key = $value;
+            $obj->post->{$key} = $value;
+        }
+        */
+        
+        if (isset($_GET)){
+            $obj->get = (object) $_GET;
+        }
+
+        if (isset($_POST)){
+            $obj->post = (object) $_POST;
         }
 
         return $obj;
